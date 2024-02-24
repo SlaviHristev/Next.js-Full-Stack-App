@@ -9,9 +9,7 @@ import { getPost } from '@/lib/data';
 
 const SinglePostPage = async ({params}) => {
     const {slug} = params;
-
     const post =  await getPost(slug);
-
     return <div className={styles.container}>
        { post.img && <div className={styles.imgContainer}>
           <Image className={styles.img} src={post.img} alt='' fill/>
