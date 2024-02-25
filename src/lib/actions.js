@@ -1,9 +1,12 @@
+"use server";
+
 import { revalidatePath } from "next/cache";
 import { Post } from "./models";
 import { connectDb } from "./utils";
+import { signIn, signOut } from "./auth";
 
 export const addPost = async(formData) =>{
-    "use server";
+
     const {title,desc,slug,userId} = Object.fromEntries(formData);
 
     try {
@@ -22,7 +25,7 @@ export const addPost = async(formData) =>{
 }
 
 export const deletePost = async(formData) =>{
-    "use server";
+
     const {id} = Object.fromEntries(formData);
 
     try {
@@ -33,3 +36,13 @@ export const deletePost = async(formData) =>{
         console.log(error);        
     }
 }
+
+export const handleGithubLogin = async () =>{
+
+    await signIn('github')
+  }
+
+  export const handleLogout = async () =>{
+
+    await signOut();
+  }s
