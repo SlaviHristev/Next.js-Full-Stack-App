@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { Post, User } from "./models";
 import { connectDb } from "./utils";
 import { signIn, signOut } from "./auth";
-
+import bcrypt from 'bcrypt'
 export const addPost = async(formData) =>{
 
     const {title,desc,slug,userId} = Object.fromEntries(formData);
@@ -58,10 +58,13 @@ export const handleGithubLogin = async () =>{
         if(user){
             return "Username already exists!"
         }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPasword =  await bcrypt.hash(password,salt);
+
         const newUser = new User({
             username,
             email,
-            password,
+            password:hashedPasword,
             img
         });
         await newUser.save();
