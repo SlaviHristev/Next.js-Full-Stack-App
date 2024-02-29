@@ -5,9 +5,9 @@ import { Post, User } from "./models";
 import { connectDb } from "./utils";
 import { signIn, signOut } from "./auth";
 import bcrypt from 'bcryptjs'
-export const addPost = async(formData) =>{
+export const addPost = async (formData) => {
 
-    const {title,desc,slug,userId} = Object.fromEntries(formData);
+    const { title, desc, slug, userId } = Object.fromEntries(formData);
 
     try {
         connectDb();
@@ -20,69 +20,73 @@ export const addPost = async(formData) =>{
         await newPost.save();
         revalidatePath('/blog')
     } catch (error) {
-        console.log(error);        
+        console.log(error);
     }
 }
 
-export const deletePost = async(formData) =>{
+export const deletePost = async (formData) => {
 
-    const {id} = Object.fromEntries(formData);
+    const { id } = Object.fromEntries(formData);
 
     try {
         connectDb();
         await Post.findByIdAndDelete(id);
         revalidatePath('/blog')
     } catch (error) {
-        console.log(error);        
+        console.log(error);
     }
 }
 
-export const handleGithubLogin = async () =>{
+export const handleGithubLogin = async () => {
 
     await signIn('github')
-  }
+}
 
-  export const handleLogout = async () =>{
+export const handleLogout = async () => {
 
     await signOut();
-  }
+}
 
-  export const register = async(formData) =>{
-    const {username,email,password,img,passwordRepeat} = Object.fromEntries(formData);
-    if(password !== passwordRepeat) {return "Passwords do not match!"};
+export const register = async (previousState,formData) => {
+    const { username, email, password, img, passwordRepeat } = Object.fromEntries(formData);
+    if (password !== passwordRepeat) {
+        return { error: 'Passwords do not match!' }
+    };
     try {
         connectDb();
 
-        const user = await User.findOne({username});
+        const user = await User.findOne({ username });
 
-        if(user){
-            return "Username already exists!"
+        if (user) {
+            return { error: "Username already exists!" }
         }
         const salt = await bcrypt.genSalt(10);
-        const hashedPasword =  await bcrypt.hash(password,salt);
+        const hashedPasword = await bcrypt.hash(password, salt);
 
         const newUser = new User({
             username,
             email,
-            password:hashedPasword,
+            password: hashedPasword,
             img
         });
         await newUser.save();
         console.log('saved to db');
+
+        return { success: true };
     } catch (error) {
         console.log(error);
-        return {error: 'Something went wrong!'}
+        return { error: 'Something went wrong!' }
     }
-  }
+}
 
-  export const login = async(formData) =>{
-    const {username,password} = Object.fromEntries(formData);
-    
+export const login = async (formData) => {
+    const { username, password } = Object.fromEntries(formData);
+
     try {
-        await signIn("credentails", {username, password});
+        await signIn("credentails", { username, password });
 
     } catch (error) {
         console.log(error);
-        return {error: 'Something went wrong!'}
+        return { error: 'Something went wrong!' }
     }
-  }
+}
