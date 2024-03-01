@@ -13,7 +13,7 @@ const Login = () => {
         <button className={styles.github}>Login with Github</button>
       </form>
       <LoginForm />
-    </div>;
+    </div>
   </div>
 };
 
