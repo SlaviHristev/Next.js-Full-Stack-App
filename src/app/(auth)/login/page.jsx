@@ -4,8 +4,6 @@ import { handleGithubLogin } from "@/lib/actions";
 
 
 const Login = () => {
-
-
   return <div className={styles.container}>
     <div className={styles.wrapper}>
 
