@@ -6,16 +6,16 @@ import { User } from "./models";
 import bcrypt from 'bcryptjs';
 import { authConfig } from "./auth.config";
 
-const login = async(credentails) =>{
+const login = async(credentials) =>{
     try {
         connectDb();
-        const user = await User.findOne({username:credentails.username});
+        const user = await User.findOne({username:credentials.username});
 
         if(!user){
             throw new Error("Wrong credentials");
         }
 
-        const isPassCorrect = await bcrypt.compare(credentails.password,user.password)
+        const isPassCorrect = await bcrypt.compare(credentials.password,user.password)
         
         if(!isPassCorrect){
             throw new Error("Wrong credentials");
@@ -32,6 +32,7 @@ CredentialsProvider({
     async authorize(credentials){
         try {
             const user = await login(credentials);
+            console.log(user);
             return user;
         } catch (error) {
             return null;
@@ -63,4 +64,5 @@ callbacks:{
         return true;
     },
     ...authConfig.callbacks,
-} });
+},
+ });

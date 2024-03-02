@@ -5,6 +5,8 @@ import { Post, User } from "./models";
 import { connectDb } from "./utils";
 import { signIn, signOut } from "./auth";
 import bcrypt from 'bcryptjs'
+
+
 export const addPost = async (prevState,formData) => {
 
     const { title, desc, slug, userId } = Object.fromEntries(formData);
@@ -81,11 +83,11 @@ export const register = async (previousState,formData) => {
     }
 }
 
-export const login = async (previousState,formData) => {
+export const login = async (prevState,formData) => {
     const { username, password } = Object.fromEntries(formData);
 
     try {
-        await signIn("credentails", { username, password });
+        await signIn("credentials", { username, password });
 
     } catch (error) {
         console.log(error);
